@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model FlowRate {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  rate      Float?
+  sensor    Sensor?   @relation(fields: [sensorId], references: [id])
+  sensorId  String?
+  timestamp DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model Volume {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  sensor    Sensor?   @relation(fields: [sensorId], references: [id])
+  sensorId  String?
+  timestamp DateTime?
+  updatedAt DateTime  @updatedAt
+  volume    Float?
+}
+
+model PulseLog {
+  createdAt  DateTime  @default(now())
+  id         String    @id @default(cuid())
+  pulseCount Int?
+  sensor     Sensor?   @relation(fields: [sensorId], references: [id])
+  sensorId   String?
+  timestamp  DateTime?
+  updatedAt  DateTime  @updatedAt
+}
+
+model Sensor {
+  createdAt DateTime   @default(now())
+  flowRates FlowRate[]
+  id        String     @id @default(cuid())
+  name      String?
+  pin       Int?
+  pulseLogs PulseLog[]
+  updatedAt DateTime   @updatedAt
+  volumes   Volume[]
+}
